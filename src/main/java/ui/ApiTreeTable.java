@@ -8,6 +8,8 @@ import javax.swing.*;
 import javax.swing.table.TableModel;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 /**
  * 自定义Table
  */
@@ -33,8 +35,10 @@ public class ApiTreeTable  extends JTable {
                     } else {
                         dataEntry.parentListTree.expand();
                     }
-                ExtensionTab.requestTextEditor.setMessage(dataEntry.requestResponse.getRequest(), true);
-                ExtensionTab.responseTextEditor.setMessage(dataEntry.requestResponse.getResponse(), false);
+                if (null != dataEntry.requestResponse){
+                    ExtensionTab.requestTextEditor.setMessage(dataEntry.requestResponse.getRequest(), true);
+                    ExtensionTab.responseTextEditor.setMessage(dataEntry.requestResponse.getResponse(), false);
+                }
                 ExtensionTab.currentlyDisplayedItem = dataEntry.requestResponse;
                 super.changeSelection(row, col, toggle, extend);
             }else {

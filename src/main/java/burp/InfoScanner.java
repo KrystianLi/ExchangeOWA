@@ -169,13 +169,14 @@ public class InfoScanner{
             int totalNumberOfPersonaInView = 0;
             int total = 0;
             for (AllUser allUser : allUsers){
-                totalNumberOfPersonaInView = allUser.getBody().getResultSet().size();
-                for (int i = 0; i < totalNumberOfPersonaInView; i++) {
+                int size = allUser.getBody().getResultSet().size();
+                for (int i = 0; i < size; i++) {
                     total++;
                     ApiTreeModel subApiTableData = new ApiTreeModel(Boolean.valueOf(true),String.valueOf(ApiTreeTable.parentCount-1)+"."+total,this.baseUrl,"","","",null,null);
                     this.subApiTableData.add(subApiTableData);
                 }
             }
+            totalNumberOfPersonaInView = total;
             this.apiListTree.setSubApiData(subApiTableData);
             ExtensionTab.apiTreeTableModel.add(apiListTree);
             //获取所有的FindPeople数据包里面的id

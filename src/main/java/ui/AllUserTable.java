@@ -44,7 +44,7 @@ public class AllUserTable {
                         String normalizedNumber = "";
                         for (int i = 0; i< businessPhoneNumbersArray.size();i++){
                                 normalizedNumber += Optional.ofNullable(businessPhoneNumbersArray.get(i).getValue().getNormalizedNumber()).orElse("");
-                                if (i+1 >= businessPhoneNumbersArray.size()){
+                                if (i+1 <= businessPhoneNumbersArray.size()){
                                         normalizedNumber += ",";
                                 }
                         }
@@ -52,7 +52,7 @@ public class AllUserTable {
                         List<NamesArray> officeLocationsArray1 = persona.getBody().getPersona().getOfficeLocationsArray();
                         for (int i = 0; i < officeLocationsArray1.size(); i++){
                                 officeLocationsArray += Optional.ofNullable(officeLocationsArray1.get(i).getValue()).orElse("");
-                                if (i+1 >= officeLocationsArray1.size()){
+                                if (i+1 <= officeLocationsArray1.size()){
                                         officeLocationsArray += ",";
                                 }
                         }

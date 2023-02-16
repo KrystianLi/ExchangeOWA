@@ -60,53 +60,67 @@ public class InfoScanner{
     }
 
     public void parseApi(){
-        //ApiTreeTable列表展示基本信息构建
-        //解析请求url
-        this.baseUrl = String.valueOf(this.iRequestInfo.getUrl());
-        //解析响应状态码
-        String statusCode = String.valueOf(this.iResponseInfo.getStatusCode());
-        //解析响应数据包长度
-        List<String> headers = this.iResponseInfo.getHeaders();
-        LinkedHashMap<String, String> stringStringLinkedHashMap = headerList2Map(headers);
-        //当前时间
-        Date date = new Date();
-        SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd hh:mm:ss");
-        String nowDate = ft.format(date);
-        //写入主节点到UI面板
-        ApiTreeModel mainApiTableData = new ApiTreeModel(Boolean.valueOf(false), String.valueOf(ApiTreeTable.parentCount++),this.baseUrl,statusCode,stringStringLinkedHashMap.get("Content-Length"),nowDate,messageInfo,apiListTree);
-        this.apiListTree.setMainApiData(mainApiTableData);
+        try {
 
-        switch (this.scannerAction){
-            case ExtensionTab.FindPeople:
-                BurpExtender.getStdout().println("All User Scanning");
-                //防止扫描数据重复
-                for (Map.Entry<String, List<AllUser>> entry: ExtensionTab.AllUser.entrySet()){
-                    if (entry.getKey().equals(this.scannerId))
-                        JOptionPane.showConfirmDialog(null,"重复扫描，请重新加载插件","OutLook",JOptionPane.WARNING_MESSAGE);
+            //ApiTreeTable列表展示基本信息构建
+            //解析请求url
+            this.baseUrl = String.valueOf(this.iRequestInfo.getUrl());
+            //解析响应状态码
+            String statusCode = String.valueOf(this.iResponseInfo.getStatusCode());
+            //解析响应数据包长度
+            List<String> headers = this.iResponseInfo.getHeaders();
+            LinkedHashMap<String, String> stringStringLinkedHashMap = headerList2Map(headers);
+            //当前时间
+            Date date = new Date();
+            SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd hh:mm:ss");
+            String nowDate = ft.format(date);
+            //写入主节点到UI面板
+            ApiTreeModel mainApiTableData = new ApiTreeModel(Boolean.valueOf(false), String.valueOf(ApiTreeTable.parentCount++),this.baseUrl,statusCode,stringStringLinkedHashMap.get("Content-Length"),nowDate,messageInfo,apiListTree);
+            this.apiListTree.setMainApiData(mainApiTableData);
+
+            switch (this.scannerAction){
+                case ExtensionTab.FindPeople:
+                    BurpExtender.getStdout().println("All User Scanning");
+                    //TODO 判断前置条件是否满足,后续补充不满足自动构造正确请求
+                    String postdata = URLDecoder.decode(headerMap.get("X-Owa-Urlpostdata"),"UTF-8");
+                    Urlpostdata urlpostdata = JSON.parseObject(postdata, Urlpostdata.class);
+                    if (null == urlpostdata.getBody().getParentFolderId() || !urlpostdata.getBody().getParentFolderId().get__type().equals("TargetFolderId:#Exchange") ){
+                        JOptionPane.showConfirmDialog(null,"错误的API接口，请检测X-Owa-Urlpostdata是否正确","OutLook",JOptionPane.WARNING_MESSAGE);
                         return;
-                }
-                ExtensionTab.AllUser.put(this.scannerId,this.allUserList);
-                parseFindPeople();
-                break;
-            case ExtensionTab.GetPersona:
-                BurpExtender.getStdout().println("Person Scanning");
-                //判断是否满足前置条件
-                List<AllUser> allUsers = ExtensionTab.AllUser.get(this.parentScannerId);
-                if (allUsers == null) {
-                    JOptionPane.showConfirmDialog(null,"请先获取All User数据","OutLook",JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
-                //防止扫描数据重复
-                for (Map.Entry<String, List<Persona>> entry: ExtensionTab.Persona.entrySet()){
-                    if (entry.getKey().equals(this.scannerId))
-                        JOptionPane.showConfirmDialog(null,"重复扫描，请重新加载插件","OutLook",JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
-                ExtensionTab.Persona.put(this.scannerId,this.personaList);
-                parsePersona();
-                break;
+                    }
+                    //防止扫描数据重复
+                    for (Map.Entry<String, List<AllUser>> entry: ExtensionTab.AllUser.entrySet()){
+                        if (entry.getKey().equals(this.scannerId))
+                            JOptionPane.showConfirmDialog(null,"重复扫描，请重新加载插件","OutLook",JOptionPane.WARNING_MESSAGE);
+                        return;
+                    }
+                    ExtensionTab.AllUser.put(this.scannerId,this.allUserList);
+                    parseFindPeople();
+                    break;
+                case ExtensionTab.GetPersona:
+                    BurpExtender.getStdout().println("Person Scanning");
+                    //判断是否满足前置条件
+                    List<AllUser> allUsers = ExtensionTab.AllUser.get(this.parentScannerId);
+                    if (allUsers == null) {
+                        JOptionPane.showConfirmDialog(null,"请先获取All User数据","OutLook",JOptionPane.WARNING_MESSAGE);
+                        return;
+                    }
+                    //防止扫描数据重复
+                    for (Map.Entry<String, List<Persona>> entry: ExtensionTab.Persona.entrySet()){
+                        if (entry.getKey().equals(this.scannerId))
+                            JOptionPane.showConfirmDialog(null,"重复扫描，请重新加载插件","OutLook",JOptionPane.WARNING_MESSAGE);
+                        return;
+                    }
+                    ExtensionTab.Persona.put(this.scannerId,this.personaList);
+                    parsePersona();
+                    break;
+            }
+            BurpExtender.getStdout().println("Scan completion");
+        }catch (Exception e){
+            for (StackTraceElement stackTraceElement : e.getStackTrace()) {
+                BurpExtender.getStderr().println(stackTraceElement);
+            }
         }
-        BurpExtender.getStdout().println("Scan completion");
     }
 
     /**
@@ -114,13 +128,8 @@ public class InfoScanner{
      */
     public void parseFindPeople(){
         try {
-            //判断X-Owa-Urlpostdata是否是正确的
             String postdata = URLDecoder.decode(headerMap.get("X-Owa-Urlpostdata"),"UTF-8");
             Urlpostdata urlpostdata = JSON.parseObject(postdata, Urlpostdata.class);
-            if (!urlpostdata.getBody().getParentFolderId().get__type().equals("TargetFolderId:#Exchange")){
-                BurpExtender.getStderr().println("error request， check requestHeader X-Owa-Urlpostdata");
-                return;
-            }
             //获取总请求数量
             JSONObject jsonObject = new JSONObject(JSONObject.parseObject(this.responseBody));
             long totalNumberOfPeopleInView = jsonObject.getJSONObject("Body").getIntValue("TotalNumberOfPeopleInView");

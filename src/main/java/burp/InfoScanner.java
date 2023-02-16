@@ -54,14 +54,15 @@ public class InfoScanner{
         this.scannerAction = this.headerMap.get("Action").trim();
         //解析邮件域名，用它做key，防止一个域名重复请求
         String emailAddress = parseEmailDomain();
+        if (emailAddress.isEmpty()){
+            JOptionPane.showConfirmDialog(null,"错误的API接口，请检测X-Owa-Urlpostdata是否正确","OutLook",JOptionPane.WARNING_MESSAGE);
+        }
         this.scannerId = emailAddress + "&" + this.scannerAction;
         this.parentScannerId = emailAddress + "&" + ExtensionTab.FindPeople;
-
     }
 
     public void parseApi(){
         try {
-
             //ApiTreeTable列表展示基本信息构建
             //解析请求url
             this.baseUrl = String.valueOf(this.iRequestInfo.getUrl());
@@ -277,14 +278,21 @@ public class InfoScanner{
     }
 
     public String parseEmailDomain(){
-        AllUser allUser = JSON.parseObject(this.responseBody, AllUser.class);
-        Persona persona = JSON.parseObject(this.responseBody, Persona.class);
-        String emailAddress = "";
-        if (allUser.getBody().getResultSet().size() > 0){
-            emailAddress = allUser.getBody().getResultSet().get(0).getEmailAddress().getEmailAddress().split("@")[1];
-        } else{
-            emailAddress = persona.getBody().getPersona().getEmailAddress().getEmailAddress().split("@")[1];
+        try {
+            AllUser allUser = JSON.parseObject(this.responseBody, AllUser.class);
+            Persona persona = JSON.parseObject(this.responseBody, Persona.class);
+            String emailAddress = "";
+            if (allUser.getBody().getResultSet().size() > 0){
+                emailAddress = allUser.getBody().getResultSet().get(0).getEmailAddress().getEmailAddress().split("@")[1];
+            } else{
+                emailAddress = persona.getBody().getPersona().getEmailAddress().getEmailAddress().split("@")[1];
+            }
+            return emailAddress;
+        }catch (Exception e){
+            for (StackTraceElement stackTraceElement : e.getStackTrace()) {
+                BurpExtender.getStderr().println(stackTraceElement);
+            }
+            return "";
         }
-        return emailAddress;
     }
 }

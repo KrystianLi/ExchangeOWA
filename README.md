@@ -28,6 +28,10 @@
 
 ![image-20230213174111382](README.assets/image-20230213174111382.png)
 
+会在  Extender ->  Extensions -> OutLook information collection -> Output 中显示扫描进度
+
+![image-20230216103138981](README.assets/image-20230216103138981.png)
+
 插件会自动爬取所有数据包并生成目录树，可以查看每一个请求响应包
 
 ![image-20230213174140945](README.assets/image-20230213174140945.png)
@@ -36,11 +40,15 @@
 
 ![image-20230213174240559](README.assets/image-20230213174240559.png)
 
-![image-20230213174313901](README.assets/image-20230213174313901.png)
+![image-20230216103041971](README.assets/image-20230216103041971.png)
 
 ## 联系人信息
 
-**必须在加载 All Users的所有数据包才能正常使用，联系人信息基于All Users数据包信息**
+**必须在加载 All Users的所有数据包才能正常使用，联系人信息基于All Users数据包信息，如果未进行第一步操作会有弹窗提醒**
+
+
+
+![image-20230216103438453](README.assets/image-20230216103438453.png)
 
 在burp中 Proxy -> HTTP history 筛选api接口
 
@@ -56,6 +64,10 @@
 
 ![image-20230213174659780](README.assets/image-20230213174659780.png)
 
+会在  Extender -> Extensions -> OutLook information collection -> Output 中显示扫描进度
+
+![image-20230216103230244](README.assets/image-20230216103230244.png)
+
 插件会自动爬取所有数据包并生成目录树，可以查看每一个请求响应包
 
 ![image-20230213174848501](README.assets/image-20230213174848501.png)
@@ -65,6 +77,15 @@
 ![image-20230213174911094](README.assets/image-20230213174911094.png)
 
 ![image-20230213175200032](README.assets/image-20230213175200032.png)
+
+# 更新
+
+[+] 2023.2.16 
+
++ 优化代码
++ 新增ALL User邮箱显示面板
++ 新增Output输出信息，便于查看当前扫描进度
++ 优化使用体验，只获取 *联系人信息*  会有弹窗提醒先进行 *All Users* 操作
 
 # 免责声明
 

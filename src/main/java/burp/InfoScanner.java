@@ -34,6 +34,7 @@ public class InfoScanner{
     private List<AllUser> allUserList;
     private List<Persona> personaList;
     private String scannerId;
+    private String parentScannerId;
     private String scannerAction;
     private String baseUrl;
 
@@ -54,6 +55,7 @@ public class InfoScanner{
         //解析邮件域名，用它做key，防止一个域名重复请求
         String emailAddress = parseEmailDomain();
         this.scannerId = emailAddress + "&" + this.scannerAction;
+        this.parentScannerId = emailAddress + "&" + ExtensionTab.FindPeople;
 
     }
 
@@ -76,7 +78,7 @@ public class InfoScanner{
 
         switch (this.scannerAction){
             case ExtensionTab.FindPeople:
-                BurpExtender.getStdout().println("进行All User扫描");
+                BurpExtender.getStdout().println("All User Scanning");
                 //防止扫描数据重复
                 for (Map.Entry<String, List<AllUser>> entry: ExtensionTab.AllUser.entrySet()){
                     if (entry.getKey().equals(this.scannerId))
@@ -87,7 +89,13 @@ public class InfoScanner{
                 parseFindPeople();
                 break;
             case ExtensionTab.GetPersona:
-                BurpExtender.getStdout().println("进行Person扫描");
+                BurpExtender.getStdout().println("Person Scanning");
+                //判断是否满足前置条件
+                List<AllUser> allUsers = ExtensionTab.AllUser.get(this.parentScannerId);
+                if (allUsers == null) {
+                    JOptionPane.showConfirmDialog(null,"请先获取All User数据","OutLook",JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
                 //防止扫描数据重复
                 for (Map.Entry<String, List<Persona>> entry: ExtensionTab.Persona.entrySet()){
                     if (entry.getKey().equals(this.scannerId))
@@ -98,6 +106,7 @@ public class InfoScanner{
                 parsePersona();
                 break;
         }
+        BurpExtender.getStdout().println("Scan completion");
     }
 
     /**
@@ -138,6 +147,7 @@ public class InfoScanner{
                 setApiTreeMode(apiTreeModel,iHttpRequestResponse);
                 AllUser allUser = JSON.parseObject(responseBody, AllUser.class);
                 this.allUserList.add(allUser);
+                BurpExtender.getStdout().println("Number of requests: "+index+1+"/"+count+1);
             }
         } catch (Exception e) {
             for (StackTraceElement stackTraceElement : e.getStackTrace()) {
@@ -154,12 +164,13 @@ public class InfoScanner{
             //获取头部信息
             String urlPostData = this.headerMap.get("X-Owa-Urlpostdata");
             entity.urlpostdata.getpersona.Urlpostdata urlpostdata = JSON.parseObject(URLDecoder.decode(urlPostData,"UTF-8"), entity.urlpostdata.getpersona.Urlpostdata.class);
-            List<AllUser> allUsers = ExtensionTab.AllUser.get("t26bv.onmicrosoft.com&FindPeople");
+            List<AllUser> allUsers = ExtensionTab.AllUser.get(this.parentScannerId);
             //解析总共有多少子节点，写入ui里面，由于请求需要时间，先写入静态内容避免面板卡死
+            int totalNumberOfPersonaInView = 0;
             int total = 0;
             for (AllUser allUser : allUsers){
-                int size = allUser.getBody().getResultSet().size();
-                for (int i = 0; i < size; i++) {
+                totalNumberOfPersonaInView = allUser.getBody().getResultSet().size();
+                for (int i = 0; i < totalNumberOfPersonaInView; i++) {
                     total++;
                     ApiTreeModel subApiTableData = new ApiTreeModel(Boolean.valueOf(true),String.valueOf(ApiTreeTable.parentCount-1)+"."+total,this.baseUrl,"","","",null,null);
                     this.subApiTableData.add(subApiTableData);
@@ -186,6 +197,7 @@ public class InfoScanner{
                     Persona persona = JSON.parseObject(responseBody, Persona.class);
                     personaList.add(persona);
                     total++;
+                    BurpExtender.getStdout().println("Number of requests: "+total+"/"+totalNumberOfPersonaInView);
                 }
             }
         }catch (Exception e){

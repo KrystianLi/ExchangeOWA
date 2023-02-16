@@ -18,7 +18,7 @@ public class AllUserTable {
         public void createFrame(){
                 f = new JFrame("outlook");
                 f.setSize(1200, 300);
-                f.setLocation(200, 200);
+                f.setLocationRelativeTo(null);
                 f.setLayout(new BorderLayout());
 
                 userTableModel = new UserTableModel();

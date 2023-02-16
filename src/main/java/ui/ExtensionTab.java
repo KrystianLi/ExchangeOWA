@@ -68,24 +68,10 @@ public class ExtensionTab implements ITab, IMessageEditorController {
                 allUserEmailItem.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mousePressed(MouseEvent e) {
-                        JFrame jFrame = new JFrame();
-                        jFrame.setSize(400, 600);
-                        jFrame.setLocation(200, 200);
-                        JPanel jPanel = new JPanel();
-                        JTextArea jr =new JTextArea();
+                        AllEmailTable allEmailTable = new AllEmailTable();
+                        allEmailTable.crateFrame();
                         String emailAddress = getSelectEmailAddress(ExtensionTab.FindPeople);
-                        ExtensionTab.AllUser.get(emailAddress).forEach(allUser1 -> {
-                            allUser1.getBody().getResultSet().forEach(resultSet1 -> {
-                                String emailAddress1 = resultSet1.getEmailAddress().getEmailAddress();
-                                jr.append(emailAddress1+"\n");
-                            });
-                        });
-                        jPanel.add(jr);
-                        jFrame.add(jPanel);
-                        jFrame.setLocationRelativeTo(null);
-                        jFrame.dispose();
-                        jFrame.pack();
-                        jFrame.setVisible(true);
+                        allEmailTable.showTable(emailAddress);
                     }
                 });
                 parseAllUserItem.addMouseListener(new MouseAdapter() {

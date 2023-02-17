@@ -24,9 +24,9 @@
 
 ![image-20230213173857088](README.assets/image-20230213173857088.png)
 
-选中该请求，右键菜单 Extensions -> OutLook information collection -> Do OoutLook Email scan
+选中该请求，右键菜单 Extensions -> OutLook information collection -> Do OoutLook Email scan -> FindPeople scan
 
-![image-20230213174111382](README.assets/image-20230213174111382.png)
+![image-20230217113412745](README.assets/image-20230217113412745.png)
 
 会在  Extender ->  Extensions -> OutLook information collection -> Output 中显示扫描进度
 
@@ -70,9 +70,9 @@
 
 ![image-20230213174443637](README.assets/image-20230213174443637.png)
 
-选中该请求，右键菜单 Extensions -> OutLook information collection -> Do OoutLook Email scan
+选中该请求，右键菜单 Extensions -> OutLook information collection -> All GetPersona scan
 
-![image-20230213174659780](README.assets/image-20230213174659780.png)
+![image-20230217113521243](README.assets/image-20230217113521243.png)
 
 会在  Extender -> Extensions -> OutLook information collection -> Output 中显示扫描进度
 
@@ -88,7 +88,22 @@
 
 ![image-20230213175200032](README.assets/image-20230213175200032.png)
 
+## 数据保存
+
+在数据展示面板，可以在表格任意位置，右键导出数据到表格，会自动生成表格在burp当前目录，文件名使用UUID，不用担心重复，除非你是欧皇φ(*￣0￣)
+
+![image-20230217113821195](README.assets/image-20230217113821195.png)
+
+![image-20230217113910275](README.assets/image-20230217113910275.png)
+
+![image-20230217113956124](README.assets/image-20230217113956124.png)
+
 # 更新
+
+[+] 2023.2.17
+
++ 优化代码和操作界面
++ 新增数据保存功能，导出格式为xls
 
 [+] 2023.2.16 
 

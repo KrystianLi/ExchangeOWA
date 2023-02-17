@@ -7,7 +7,7 @@ import java.util.List;
 public class UserTableModel extends AbstractTableModel {
 
     private List<UserModel> userModelList;
-    public String[] columnNames = new String[]{"用户id","邮箱地址",  "手机号",  "办公地址","职务","部门"};
+    public String[][] columnNames = new String[][]{{"id","emailAddress","number","officeLocations","title","department"},{"用户id","邮箱地址",  "手机号",  "办公地址","职务","部门"}};
 
     public UserTableModel(){
         userModelList = new ArrayList<>();
@@ -21,11 +21,11 @@ public class UserTableModel extends AbstractTableModel {
         this.userModelList = userModelList;
     }
 
-    public String[] getColumnNames() {
+    public String[][] getColumnNames() {
         return columnNames;
     }
 
-    public void setColumnNames(String[] columnNames) {
+    public void setColumnNames(String[][] columnNames) {
         this.columnNames = columnNames;
     }
 
@@ -36,12 +36,12 @@ public class UserTableModel extends AbstractTableModel {
 
     @Override
     public String getColumnName(int column) {
-        return columnNames[column];
+        return columnNames[1][column];
     }
 
     @Override
     public int getColumnCount() {
-        return columnNames.length;
+        return columnNames[1].length;
     }
 
     @Override

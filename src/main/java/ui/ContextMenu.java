@@ -17,31 +17,42 @@ public class ContextMenu implements IContextMenuFactory {
     @Override
     public List<JMenuItem> createMenuItems(IContextMenuInvocation iContextMenuInvocation) {
         List<JMenuItem> menuItems = new ArrayList<>();
-        JMenuItem menuItem = new JMenuItem("Do OoutLook Email scan");
-        menuItem.addActionListener(new ContextMenuActionListener(iContextMenuInvocation));
-        menuItems.add(menuItem);
+        JMenuItem findPeopleItem = new JMenuItem("FindPeople scan");
+        JMenuItem getPersonaItem = new JMenuItem("All GetPersona scan");
+        findPeopleItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CompletableFuture.supplyAsync(() -> {
+                    //获取当前选择的url
+                    IHttpRequestResponse[] httpRequestResponses = iContextMenuInvocation.getSelectedMessages();
+                    for (IHttpRequestResponse iHttpRequestResponse : httpRequestResponses){
+                        InfoScanner infoScanner = new InfoScanner(iHttpRequestResponse);
+                        infoScanner.scanFindPeople();
+                    }
+                    BurpExtender.getStdout().println("Scan completion");
+                    return null;
+                },MyExecutor.getExecutor());
+            }
+        });
+        getPersonaItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //异步执行该方法
+                CompletableFuture.supplyAsync(() -> {
+                    //获取当前选择的url
+                    IHttpRequestResponse[] httpRequestResponses = iContextMenuInvocation.getSelectedMessages();
+                    for (IHttpRequestResponse iHttpRequestResponse : httpRequestResponses){
+                        InfoScanner infoScanner = new InfoScanner(iHttpRequestResponse);
+                        infoScanner.scanPersona();
+                    }
+                    BurpExtender.getStdout().println("Scan completion");
+                    return null;
+                },MyExecutor.getExecutor());
+            }
+        });
+        menuItems.add(findPeopleItem);
+        menuItems.add(getPersonaItem);
         return menuItems;
     }
-
-    static class ContextMenuActionListener implements ActionListener {
-        IContextMenuInvocation iContextMenuInvocation;
-        public ContextMenuActionListener (IContextMenuInvocation iContextMenuInvocation) {
-            this.iContextMenuInvocation = iContextMenuInvocation;
-        }
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            //异步执行该方法
-            CompletableFuture.supplyAsync(() -> {
-                //获取当前选择的url
-                IHttpRequestResponse[] httpRequestResponses = this.iContextMenuInvocation.getSelectedMessages();
-                for (IHttpRequestResponse iHttpRequestResponse : httpRequestResponses){
-                    InfoScanner infoScanner = new InfoScanner(iHttpRequestResponse);
-                    infoScanner.parseApi();
-                }
-                return null;
-            },MyExecutor.getExecutor());
-        }
-        }
-
 }
 

@@ -9,9 +9,8 @@ public enum PurposeEnum {
     //ExchangeOWA Version
     Exchange2013_FindPeople("Exchange2013", "FindPeople","scan.Exchange2013"),
     Exchange2013_GetPersona("Exchange2013", "GetPersona","scan.Exchange2013"),
-    Exchange2016_FindPeople("Exchange2016", "FindPeople","scan.Exchange2016"),
-    Exchange2016_GetPersona("Exchange2016", "GetPersona","scan.Exchange2016"),
-    Exchange2016_GetGroup("Exchange2016", "GetGroup","scan.Exchange2016"),
+    Exchange2018_FindPeople("Exchange2018", "FindPeople","scan.Exchange2018"),
+    Exchange2018_GetPersona("Exchange2018", "GetPersona","scan.Exchange2018"),
     ;
 
     private String version;

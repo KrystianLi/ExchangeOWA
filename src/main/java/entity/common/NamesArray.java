@@ -1,25 +1,29 @@
 package entity.common;
 
+import com.alibaba.fastjson2.annotation.JSONField;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class NamesArray {
-    private String Value;
-    private List<String> Attributions = new ArrayList<String>();
+    @JSONField(name = "Value",ordinal = 0)
+    private String value;
+    @JSONField(name = "Attributions",ordinal = 1)
+    private List<String> attributions = new ArrayList<String>();
 
     public String getValue() {
-        return Value;
+        return value;
     }
 
     public void setValue(String value) {
-        Value = value;
+        this.value = value;
     }
 
     public List<String> getAttributions() {
-        return Attributions;
+        return attributions;
     }
 
     public void setAttributions(List<String> attributions) {
-        Attributions = attributions;
+        this.attributions = attributions;
     }
 }

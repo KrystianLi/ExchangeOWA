@@ -1,2 +1,17 @@
 # Project exclude paths
 /target/
+/.idea/
+/src/test/
+/src/main/resources/
+### Example user template template
+### Example user template
+
+# IntelliJ project files
+.idea
+*.iml
+out
+gen
+!/.idea/
+!/src/test/
+!/src/main/resources/
+!/test.db

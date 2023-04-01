@@ -1,7 +1,7 @@
 package model;
 
 import burp.BurpExtender;
-import ui.ExtensionTab;
+import ui.MainUI;
 
 import java.util.List;
 
@@ -40,7 +40,7 @@ public class ApiListTree{
     public void expand(){
         if (!this.expandStatus){
             this.mainApiData.setTreeStatus(TREE_STATUS_EXPAND);
-            List<ApiTreeModel> apiTableData = ExtensionTab.apiTreeTable.getTableData();
+            List<ApiTreeModel> apiTableData = MainUI.apiTreeTable.getTableData();
             int selfIndex = apiTableData.indexOf(this.mainApiData);
             for (int i = 0; i < this.subApiData.size(); i++) {
                 ApiTreeModel data = this.subApiData.get(i);
@@ -59,7 +59,7 @@ public class ApiListTree{
         try {
             if (this.expandStatus){
                 this.mainApiData.setTreeStatus(TREE_STATUS_COLLAPSE);
-                List<ApiTreeModel> apiTableData = ExtensionTab.apiTreeTable.getTableData();
+                List<ApiTreeModel> apiTableData = MainUI.apiTreeTable.getTableData();
                 int selfIndex = apiTableData.indexOf(this.mainApiData);
                 for (int i = 0; i < this.subApiData.size(); i++)
                     apiTableData.remove(selfIndex + 1);

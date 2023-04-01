@@ -1,49 +1,56 @@
 package entity.common;
 
+import com.alibaba.fastjson2.annotation.JSONField;
+
 public class ServerVersionInfo {
-    private int MajorVersion;
-    private int MinorVersion;
-    private int MajorBuildNumber;
-    private int MinorBuildNumber;
-    private String Version;
+    @JSONField(name = "MajorVersion",ordinal = 0)
+    private int majorVersion;
+    @JSONField(name = "MinorVersion",ordinal = 1)
+    private int minorVersion;
+    @JSONField(name = "MajorBuildNumber",ordinal = 2)
+    private int majorBuildNumber;
+    @JSONField(name = "MinorBuildNumber",ordinal = 3)
+    private int minorBuildNumber;
+    @JSONField(name = "Version",ordinal = 0)
+    private String version;
 
     public int getMajorVersion() {
-        return MajorVersion;
+        return majorVersion;
     }
 
     public void setMajorVersion(int majorVersion) {
-        MajorVersion = majorVersion;
+        this.majorVersion = majorVersion;
     }
 
     public int getMinorVersion() {
-        return MinorVersion;
+        return minorVersion;
     }
 
     public void setMinorVersion(int minorVersion) {
-        MinorVersion = minorVersion;
+        this.minorVersion = minorVersion;
     }
 
     public int getMajorBuildNumber() {
-        return MajorBuildNumber;
+        return majorBuildNumber;
     }
 
     public void setMajorBuildNumber(int majorBuildNumber) {
-        MajorBuildNumber = majorBuildNumber;
+        this.majorBuildNumber = majorBuildNumber;
     }
 
     public int getMinorBuildNumber() {
-        return MinorBuildNumber;
+        return minorBuildNumber;
     }
 
     public void setMinorBuildNumber(int minorBuildNumber) {
-        MinorBuildNumber = minorBuildNumber;
+        this.minorBuildNumber = minorBuildNumber;
     }
 
     public String getVersion() {
-        return Version;
+        return version;
     }
 
     public void setVersion(String version) {
-        Version = version;
+        this.version = version;
     }
 }

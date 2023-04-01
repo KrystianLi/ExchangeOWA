@@ -1,14 +1,11 @@
 package ui;
 
 import burp.*;
-import utils.MyExecutor;
-
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * 右键菜单类
@@ -17,41 +14,29 @@ public class ContextMenu implements IContextMenuFactory {
     @Override
     public List<JMenuItem> createMenuItems(IContextMenuInvocation iContextMenuInvocation) {
         List<JMenuItem> menuItems = new ArrayList<>();
-        JMenuItem findPeopleItem = new JMenuItem("FindPeople scan");
-        JMenuItem getPersonaItem = new JMenuItem("All GetPersona scan");
-        findPeopleItem.addActionListener(new ActionListener() {
+        JMenuItem sendToConfigItem = new JMenuItem("Send to Config Panel");
+        sendToConfigItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                CompletableFuture.supplyAsync(() -> {
-                    //获取当前选择的url
-                    IHttpRequestResponse[] httpRequestResponses = iContextMenuInvocation.getSelectedMessages();
-                    for (IHttpRequestResponse iHttpRequestResponse : httpRequestResponses){
-                        InfoScanner infoScanner = new InfoScanner(iHttpRequestResponse);
-                        infoScanner.scanFindPeople();
+                //获取当前选择的url
+                IHttpRequestResponse[] httpRequestResponses = iContextMenuInvocation.getSelectedMessages();
+                for (IHttpRequestResponse iHttpRequestResponse : httpRequestResponses){
+                    try{
+                        String requestStr = new String(iHttpRequestResponse.getRequest(), "UTF-8");
+                        BurpExtender.main.getConfigPanel().getRequestTextArea().setText(requestStr);
+                        BurpExtender.main.getConfigPanel().setiHttpRequestResponse(iHttpRequestResponse);
+                    }catch (Exception exception){
+                        for (StackTraceElement stackTraceElement : exception.getStackTrace()) {
+                            BurpExtender.getStderr().println(stackTraceElement.toString());
+                        }
+
                     }
-                    BurpExtender.getStdout().println("Scan completion");
-                    return null;
-                },MyExecutor.getExecutor());
+
+                }
+                BurpExtender.getStdout().println("send to config panel");
             }
         });
-        getPersonaItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //异步执行该方法
-                CompletableFuture.supplyAsync(() -> {
-                    //获取当前选择的url
-                    IHttpRequestResponse[] httpRequestResponses = iContextMenuInvocation.getSelectedMessages();
-                    for (IHttpRequestResponse iHttpRequestResponse : httpRequestResponses){
-                        InfoScanner infoScanner = new InfoScanner(iHttpRequestResponse);
-                        infoScanner.scanPersona();
-                    }
-                    BurpExtender.getStdout().println("Scan completion");
-                    return null;
-                },MyExecutor.getExecutor());
-            }
-        });
-        menuItems.add(findPeopleItem);
-        menuItems.add(getPersonaItem);
+        menuItems.add(sendToConfigItem);
         return menuItems;
     }
 }

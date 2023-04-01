@@ -1,8 +1,10 @@
-# OutLook
+# ExchangeOWA
 
-这是一款burp插件，用于Outlook用户信息收集，在已登录Outlook账号后，可以使用该
+这是一款burp插件，用于Outlook 网页版用户信息收集，在已登录Outlook 网页版账号后，可以使用该
 
-插件自动爬取所有联系人的信息
+插件自动爬取所有联系人的信息，快速收集目标所有邮箱和个人信息
+
+目前支持版本：V2013、V2018_01_08
 
 # 安装
 
@@ -10,9 +12,9 @@
 
 # 功能介绍
 
-## All Users
+## FindPeople
 
-加载插件后，进入Outlook联系人面板，点击All Users
+加载插件后，进入Outlook 网页版联系人面板，点击All Users
 
 ![image-20230213173654737](README.assets/image-20230213173654737.png)
 
@@ -24,41 +26,47 @@
 
 ![image-20230213173857088](README.assets/image-20230213173857088.png)
 
-选中该请求，右键菜单 Extensions -> OutLook information collection -> Do OoutLook Email scan -> FindPeople scan
+我们可以发现，筛选出来还是有很多条，我们要选中正确的那条（返回包里面有TotalNumberOfPeopleInView字段）
 
-![image-20230217113412745](README.assets/image-20230217113412745.png)
+![image-20230401093210711](README.assets/image-20230401093210711.png)
 
-会在  Extender ->  Extensions -> OutLook information collection -> Output 中显示扫描进度
+选中该请求，右键菜单 Extensions -> Exchange OWA -> Send to Config Panel 
 
-![image-20230216103138981](README.assets/image-20230216103138981.png)
+![image-20230401093322540](README.assets/image-20230401093322540.png)
 
-插件会自动爬取所有数据包并生成目录树，可以查看每一个请求响应包
 
-![image-20230213174140945](README.assets/image-20230213174140945.png)
 
-右击该请求会弹出右键菜单，选择获取所有用户邮箱，即可获得所有的邮箱
+进入到我们的插件OWA -> config 面板，这里面配置我们的exchange服务器版本，因为不同版本的请求包会有细微的差别，我们可以通过version调整我们的版本，然后action选中FindPeople
 
-![image-20230213174240559](README.assets/image-20230213174240559.png)
+![image-20230401093504405](README.assets/image-20230401093504405.png)
 
-![image-20230216103041971](README.assets/image-20230216103041971.png)
+点击开始，会在下方result面板输出我们的进度，默认是5线程，使用ThreadPoolExecutor创建的线程池，任务完成后会自动销毁，也可以点击停止终止并销毁所有线程池
+
+![image-20230401094027004](README.assets/image-20230401094027004.png)
+
+我们进入到history面板，插件会自动爬取所有数据包并生成目录树，可以查看每一个请求响应包
+
+![image-20230401094306054](README.assets/image-20230401094306054.png)
+
+右击该请求会弹出右键菜单，点击解析FindPeople数据包，会弹出窗体，把数据格式化表格输出
+
+![image-20230401100358082](README.assets/image-20230401100358082.png)
+
+![image-20230401100623575](README.assets/image-20230401100623575.png)
 
 ### 注意
 
 该Api会有大量相同url，不同的Post提交参数，如果选错了Api接口，会有弹窗提示
 
-![image-20230216154324919](README.assets/image-20230216154324919.png)
-
-![image-20230216154623603](README.assets/image-20230216154623603.png)
 
 
 
-## 联系人信息
 
-**必须在加载 All Users的所有数据包才能正常使用，联系人信息基于All Users数据包信息，如果未进行第一步操作会有弹窗提醒**
+## GetPersona
 
+**必须在加载 FindPeople 的所有数据包才能正常使用，GetPersona 基于FindPeople数据包信息，如果未进行第一步操作会有弹窗提醒**
 
-
-![image-20230216103438453](README.assets/image-20230216103438453.png)
+![image-20230401100857999](README.assets/image-20230401100857999.png)
 
 在burp中 Proxy -> HTTP history 筛选api接口
 
@@ -70,23 +78,25 @@
 
 ![image-20230213174443637](README.assets/image-20230213174443637.png)
 
-选中该请求，右键菜单 Extensions -> OutLook information collection -> All GetPersona scan
+选中该请求，右键菜单 Extensions -> ExchangeOWA -> Send to Config Panel
 
-![image-20230217113521243](README.assets/image-20230217113521243.png)
+![image-20230401100953192](README.assets/image-20230401100953192.png)
 
-会在  Extender -> Extensions -> OutLook information collection -> Output 中显示扫描进度
+进入到我们的插件OWA -> config 面板，这里面配置我们的exchange服务器版本和action选项为GetPersona，点击开始，就会自动获取数据
 
-![image-20230216103230244](README.assets/image-20230216103230244.png)
+![image-20230401101332839](README.assets/image-20230401101332839.png)
 
-插件会自动爬取所有数据包并生成目录树，可以查看每一个请求响应包
+![image-20230401101405105](README.assets/image-20230401101405105.png)
 
-![image-20230213174848501](README.assets/image-20230213174848501.png)
+进入到history面板，插件会自动解析所有数据包并生成目录树，可以查看每一个请求响应包
 
-右击该请求会弹出右键菜单，选择获取 All User个人信息，可获取所有联系人信息
+![image-20230401101527578](README.assets/image-20230401101527578.png)
 
-![image-20230213174911094](README.assets/image-20230213174911094.png)
+右击该请求会弹出右键菜单，选择解析GetPersona，可自动解析该数据包的内容
 
-![image-20230213175200032](README.assets/image-20230213175200032.png)
+![image-20230401101552500](README.assets/image-20230401101552500.png)
+
+![image-20230401101706437](README.assets/image-20230401101706437.png)
 
 ## 数据保存
 
@@ -99,6 +109,13 @@
 ![image-20230217113956124](README.assets/image-20230217113956124.png)
 
 # 更新
+
+[+] 2023.4.1
+
++ 重构项目，兼容更多的exchange版本
++ 支持2018、2013，更多版本在实战遇到会添加，也欢迎大家提交样本集成进去
++ 重写UI面板和操作方式，进一步优化
++ 新增多线程操作，可以提高效率
 
 [+] 2023.2.17
 

@@ -1,8 +1,12 @@
 package entity.common;
 
+import com.alibaba.fastjson2.annotation.JSONField;
+
 public class Id {
+    @JSONField(name = "__type",ordinal = 0)
     private String __type;
-    private String Id;
+    @JSONField(name = "Id",ordinal = 1)
+    private String id;
 
     public String get__type() {
         return __type;
@@ -13,10 +17,10 @@ public class Id {
     }
 
     public String getId() {
-        return Id;
+        return id;
     }
 
     public void setId(String id) {
-        this.Id = id;
+        this.id = id;
     }
 }

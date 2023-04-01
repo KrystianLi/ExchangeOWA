@@ -36,10 +36,10 @@ public class ApiTreeTable  extends JTable {
                         dataEntry.parentListTree.expand();
                     }
                 if (null != dataEntry.requestResponse){
-                    ExtensionTab.requestTextEditor.setMessage(dataEntry.requestResponse.getRequest(), true);
-                    ExtensionTab.responseTextEditor.setMessage(dataEntry.requestResponse.getResponse(), false);
+                    BurpExtender.requestTextEditor.setMessage(dataEntry.requestResponse.getRequest(), true);
+                    BurpExtender.responseTextEditor.setMessage(dataEntry.requestResponse.getResponse(), false);
                 }
-                ExtensionTab.currentlyDisplayedItem = dataEntry.requestResponse;
+                BurpExtender.currentlyDisplayedItem = dataEntry.requestResponse;
                 super.changeSelection(row, col, toggle, extend);
             }else {
                 BurpExtender.getStdout().println("null dataEntry");

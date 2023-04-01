@@ -1,36 +1,54 @@
 package burp;
 
 import ui.ContextMenu;
-import ui.ExtensionTab;
+import ui.MainUI;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class BurpExtender implements IBurpExtender, ITab{
+public class BurpExtender implements IBurpExtender, ITab, IMessageEditorController{
     private static PrintWriter stdout;
     private static PrintWriter stderr;
+    public static IHttpRequestResponse currentlyDisplayedItem;
     private static IExtensionHelpers helpers;
     private static IBurpExtenderCallbacks callbacks;
-    private String extensionName = "OutLook";
-
-    private static ExtensionTab extensionTab;
+    public static IMessageEditor requestTextEditor;
+    public static IMessageEditor responseTextEditor;
+    public static MainUI main;
+    //常量定义
+    private String extensionName = "OWA";
+    public static final String FindPeople = "FindPeople";
+    public static final String GetPersona = "GetPersona";
+    //TODO 静态变量存储请求响应结果，便于其他类使用数据，后续改为db文件存储
+    public static Map<String, List<entity.findpeople.FindPeople>> AllUser = new HashMap<>();
+    public static Map<String, List<entity.getpersona.GetPersona>> Persona = new HashMap<>();
     @Override
     public void registerExtenderCallbacks(IBurpExtenderCallbacks iBurpExtenderCallbacks) {
         //初始化变量
         this.callbacks = iBurpExtenderCallbacks;
         this.helpers = this.callbacks.getHelpers();
+        this.requestTextEditor = iBurpExtenderCallbacks.createMessageEditor(BurpExtender.this, false);
+        this.responseTextEditor = iBurpExtenderCallbacks.createMessageEditor(BurpExtender.this,false);
         //设置插件名字
-        iBurpExtenderCallbacks.setExtensionName("OutLook information collection");
+        iBurpExtenderCallbacks.setExtensionName("Exchange OWA");
         // 实例化输入输出
         this.stdout = new PrintWriter(iBurpExtenderCallbacks.getStdout(), true);
         this.stderr = new PrintWriter(iBurpExtenderCallbacks.getStderr(), true);
         //注册右键菜单
         callbacks.registerContextMenuFactory(new ContextMenu());
-        // UI
-        extensionTab = new ExtensionTab(extensionName);
+        //初始化UI
+        SwingUtilities.invokeLater(this::initialize);
+
+    }
+
+    private void initialize() {
+        main = new MainUI();
+        callbacks.customizeUiComponent(main);
+        callbacks.addSuiteTab(BurpExtender.this);
     }
 
 
@@ -41,7 +59,7 @@ public class BurpExtender implements IBurpExtender, ITab{
 
     @Override
     public Component getUiComponent() {
-        return extensionTab.getComponent();
+        return main;
     }
 
     public static PrintWriter getStdout() {
@@ -73,5 +91,20 @@ public class BurpExtender implements IBurpExtender, ITab{
             }
         }
         return responseBody;
+    }
+
+    @Override
+    public IHttpService getHttpService() {
+        return this.currentlyDisplayedItem.getHttpService();
+    }
+
+    @Override
+    public byte[] getRequest() {
+        return this.currentlyDisplayedItem.getRequest();
+    }
+
+    @Override
+    public byte[] getResponse() {
+        return this.currentlyDisplayedItem.getResponse();
     }
 }

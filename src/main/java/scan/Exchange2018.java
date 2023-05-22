@@ -7,6 +7,7 @@ import entity.findpeople.FindPeople;
 import entity.findpeople.body.ResultSet;
 import entity.getpersona.GetPersona;
 import entity.onesix.urlpostdata.findpeople.Urlpostdata;
+import javafx.application.Platform;
 import model.ApiListTree;
 import model.ApiTreeModel;
 import strategy.ExchangeStrategy;
@@ -116,7 +117,12 @@ public class Exchange2018 extends ExchangeStrategy {
                     //取出当前请求对应的子节点，填充数据包
                     ApiTreeModel apiTreeModel = subApiTableData.get(headerList.getKey());
                     MainUI.apiTreeTableModel.setApiTreeMode(apiTreeModel,iHttpRequestResponse);
-                    FindPeople findPeople = JSON.parseObject(tempResponseBody, FindPeople.class);
+                    FindPeople findPeople = null;
+                    try{
+                        findPeople = JSON.parseObject(tempResponseBody, FindPeople.class);
+                    }catch (Exception e){
+                        System.out.println("json数据解析错误");
+                    }
                     findPeopleList.add(findPeople);
                     BurpExtender.main.getResultTextArea().append("Number of requests: "+headerList.getKey()+1+"/"+count+1+"\n");
                 },threadPoolExecutor);

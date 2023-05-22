@@ -1,6 +1,7 @@
 package ui;
 
 import burp.BurpExtender;
+import entity.common.Id;
 import model.FindPeopleModel;
 import model.FindPeopleTableModel;
 import utils.ExportExcel;
@@ -12,6 +13,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Optional;
 
 public class FindPeopleTable {
     private JFrame jFrame;
@@ -72,12 +74,25 @@ public class FindPeopleTable {
         List<FindPeopleModel> findPeopleModelList = findPeopleTableModel.getUserEmailModelList();
         BurpExtender.AllUser.get(emailAddress).forEach(allUser1 -> {
             allUser1.getBody().getResultSet().forEach(resultSet1 -> {
-                String id = resultSet1.getPersonaId().getId();
-                String emailAddress1 = resultSet1.getEmailAddress().getEmailAddress();
-                String displayName = resultSet1.getDisplayName();
-                FindPeopleModel findPeopleModel = new FindPeopleModel(id, emailAddress1, displayName,emailAddress);
-                findPeopleModelList.add(findPeopleModel);
-                this.findPeopleTableModel.fireTableDataChanged();
+                try{
+                    String id = "";
+                    String emailAddress1 = "";
+                    String displayName = "";
+                    if (Optional.ofNullable(resultSet1.getPersonaId()).isPresent()){
+                        id = resultSet1.getPersonaId().getId();
+                    }
+                    if (Optional.ofNullable(resultSet1.getEmailAddress()).isPresent()){
+                        emailAddress1 = resultSet1.getEmailAddress().getEmailAddress();
+                    }
+                    if (Optional.ofNullable(resultSet1.getDisplayName()).isPresent()){
+                        displayName = resultSet1.getDisplayName();
+                    }
+                    FindPeopleModel findPeopleModel = new FindPeopleModel(id, emailAddress1, displayName,emailAddress);
+                    findPeopleModelList.add(findPeopleModel);
+                    this.findPeopleTableModel.fireTableDataChanged();
+                }catch (Exception e){
+                    System.out.println("数据解析异常");
+                }
             });
         });
 

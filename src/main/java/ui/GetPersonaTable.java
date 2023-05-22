@@ -4,6 +4,7 @@ import burp.BurpExtender;
 import entity.common.NamesArray;
 import entity.getpersona.GetPersona;
 import entity.getpersona.body.BusinessPhoneNumbersArray.BusinessPhoneNumbersArray;
+import entity.getpersona.body.Persona;
 import model.GetPersonaModel;
 import model.GetPersonaTableModel;
 import utils.ExportExcel;
@@ -75,9 +76,20 @@ public class GetPersonaTable {
                 List<GetPersona> getPersonas = BurpExtender.Persona.get(emailAddress);
                 List<GetPersonaModel> getPersonaModelList = getPersonaTableModel.getUserModelList();
                 for (GetPersona getPersona : getPersonas) {
-                        String id = Optional.ofNullable(getPersona.getBody().getPersona().getPersonaId().getId()).orElse("");
-                        String displayName = Optional.ofNullable(getPersona.getBody().getPersona().getDisplayName()).orElse("");
-                        String emailAddress1 = Optional.ofNullable(getPersona.getBody().getPersona().getEmailAddress().getEmailAddress()).orElse("");
+                        Persona persona = getPersona.getBody().getPersona();
+                        String id = "";
+                        String displayName = "";
+                        String emailAddress1 = "";
+                        if (Optional.ofNullable(persona.getPersonaId()).isPresent()){
+                                id = persona.getPersonaId().getId();
+                        }
+
+                        displayName = Optional.ofNullable(persona.getDisplayName()).orElse("");
+
+                        if (Optional.ofNullable(persona.getEmailAddress()).isPresent()){
+                                emailAddress1 = persona.getEmailAddress().getEmailAddress();
+                        }
+
                         List<BusinessPhoneNumbersArray> businessPhoneNumbersArray = getPersona.getBody().getPersona().getBusinessPhoneNumbersArray();
                         String normalizedNumber = "";
                         for (int i = 0; i< businessPhoneNumbersArray.size();i++){
